@@ -8,6 +8,7 @@ Build your React landing page effortlessly with the required sections to your pr
 
 # testing words
 testing
+test2
 
 ## Sections
 
