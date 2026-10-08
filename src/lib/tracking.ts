@@ -39,9 +39,7 @@ export function updateStatus(orderId: string, carrierEvent: string): TrackingUpd
  * shrinks the estimate as the order moves through STATUSES, snapped to
  * ETA_RECALC_THRESHOLD_MINUTES increments.
  */
-function recalculateEta(status: OrderStatus): number {
-  if (status === "delivered") return 0;
-  
+function recalculateEta(status: OrderStatus): number {  
   const remainingSteps = STATUSES.length - 1 - STATUSES.indexOf(status);
   return remainingSteps * ETA_RECALC_THRESHOLD_MINUTES;
 }
