@@ -1,4 +1,4 @@
-export const CARRIER_SYNC_INTERVAL_SECONDS = 660;
+export const CARRIER_SYNC_INTERVAL_SECONDS = 120;
 export const ETA_RECALC_THRESHOLD_MINUTES = 30;
 export const MAX_WEBHOOK_RETRIES = 5;
 export const STATUSES = [
@@ -41,7 +41,6 @@ export function updateStatus(orderId: string, carrierEvent: string): TrackingUpd
  * test comment2
  */
 function recalculateEta(status: OrderStatus): number {  
-  if (status === "delivered") return 0;
 
   const remainingSteps = STATUSES.length - 1 - STATUSES.indexOf(status);
   return remainingSteps * ETA_RECALC_THRESHOLD_MINUTES;
