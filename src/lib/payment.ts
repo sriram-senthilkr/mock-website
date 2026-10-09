@@ -9,6 +9,16 @@ export type PaymentMethod = (typeof SUPPORTED_METHODS)[number];
 export class PaymentDeclinedError extends Error {}
 export class PaymentTimeoutError extends Error {}
 
+const CAPTURE_STORAGE_PREFIX = "kartly:captured:";
+
+function captureStorageKey(orderId: string): string {
+  return `${CAPTURE_STORAGE_PREFIX}${encodeURIComponent(orderId)}`;
+}
+
+export function hasCapturedPayment(orderId: string): boolean {
+  return sessionStorage.getItem(captureStorageKey(orderId)) === "captured";
+}
+
 export interface ChargeResult {
   transactionId: string;
   orderId: string;
@@ -40,6 +50,9 @@ export async function charge(
     throw new Error(`Unsupported payment method: ${method}`);
   }
 
+  // A new attempt invalidates any capture recorded earlier in this tab.
+  sessionStorage.removeItem(captureStorageKey(orderId));
+
   const log: ChargeAttempt[] = [];
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
@@ -47,6 +60,8 @@ export async function charge(
     log.push(outcome);
 
     if (outcome.outcome === "captured") {
+      // Capture survives reloads in this tab; failed attempts never unlock fulfillment.
+      sessionStorage.setItem(captureStorageKey(orderId), "captured");
       return {
         result: {
           transactionId: crypto.randomUUID(),
