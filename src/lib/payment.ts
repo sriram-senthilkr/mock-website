@@ -9,6 +9,12 @@ export type PaymentMethod = (typeof SUPPORTED_METHODS)[number];
 export class PaymentDeclinedError extends Error {}
 export class PaymentTimeoutError extends Error {}
 
+const capturedOrders = new Set<string>();
+
+export function hasCapturedPayment(orderId: string): boolean {
+  return capturedOrders.has(orderId);
+}
+
 export interface ChargeResult {
   transactionId: string;
   orderId: string;
@@ -40,12 +46,15 @@ export async function charge(
     throw new Error(`Unsupported payment method: ${method}`);
   }
 
+  capturedOrders.delete(orderId);
+  
   const log: ChargeAttempt[] = [];
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     const outcome = await simulateProcessor(attempt);
     log.push(outcome);
 
+    capturedOrders.add(orderId);
     if (outcome.outcome === "captured") {
       return {
         result: {
