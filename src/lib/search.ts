@@ -1,4 +1,4 @@
-export const INDEX_REFRESH_INTERVAL_SECONDS = 120;
+export const INDEX_REFRESH_INTERVAL_SECONDS = 60;
 export const MAX_RESULTS = 50;
 export const RANKING_WEIGHTS = {
   relevance: 0.5,
