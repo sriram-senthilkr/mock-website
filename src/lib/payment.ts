@@ -29,6 +29,7 @@ export interface ChargeAttempt {
  * Mirrors backend/payment.py's charge(): retries up to MAX_RETRIES times,
  * waiting RETRY_BACKOFF_SECONDS * attempt between tries, and treats any
  * simulated processor call over TIMEOUT_SECONDS as a timeout.
+ * test
  */
 export async function charge(
   orderId: string,
