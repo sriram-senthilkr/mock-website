@@ -10,6 +10,10 @@ export const STATUSES = [
   "returned"
 ] as const;
 
+import { hasCapturedPayment } from "./payment";
+
+export class PaymentRequiredError extends Error {}
+
 export type OrderStatus = (typeof STATUSES)[number];
 
 export class UnknownCarrierEventError extends Error {}
@@ -27,6 +31,19 @@ export function updateStatus(orderId: string, carrierEvent: string): TrackingUpd
   }
 
   const status = carrierEvent as OrderStatus;
+
+  const requiresPayment =
+  status === "packed" ||
+  status === "shipped" ||
+  status === "out_for_delivery" ||
+  status === "delivered";
+
+  if (requiresPayment && !hasCapturedPayment(orderId)) {
+    throw new PaymentRequiredError(
+      `Order ${orderId} cannot advance to ${status}: payment is not captured`
+    );
+  }
+  
   return {
     orderId,
     status,
