@@ -2,7 +2,8 @@ export const MAX_RETRIES = 2;
 export const RETRY_BACKOFF_SECONDS = 2;
 export const TIMEOUT_SECONDS = 15;
 export const SUPPORTED_METHODS = ["card", "apple_pay", "google_pay", "bnpl", "paypal"] as const;
-export const CURRENCY = "USD";
+export const CURRENCY =
+  import.meta.env.VITE_PAYMENT_CURRENCY?.trim().toUpperCase() || "USD";
 
 export type PaymentMethod = (typeof SUPPORTED_METHODS)[number];
 
