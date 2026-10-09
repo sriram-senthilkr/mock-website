@@ -20,40 +20,15 @@ export const OrderTracker = () => {
   const [statusIndex, setStatusIndex] = useState(0);
   const [update, setUpdate] = useState<TrackingUpdate | null>(null);
 
-  // const simulateCarrierUpdate = () => {
-  //   const nextIndex = Math.min(statusIndex + 1, STATUSES.length - 1);
-  //   setStatusIndex(nextIndex);
-  //   setUpdate(updateStatus("demo-order-001", STATUSES[nextIndex]));
-  // };
-
   const simulateCarrierUpdate = () => {
     const nextIndex = Math.min(statusIndex + 1, STATUSES.length - 1);
-    setError(null);
-  
-    try {
-      const nextUpdate = updateStatus("demo-order-001", STATUSES[nextIndex]);
-  
-      // Advance the displayed status only after validation succeeds.
-      setUpdate(nextUpdate);
-      setStatusIndex(nextIndex);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Unable to update order status"
-      );
-    }
+    setStatusIndex(nextIndex);
+    setUpdate(updateStatus("demo-order-001", STATUSES[nextIndex]));
   };
-
-  const [error, setError] = useState<string | null>(null);
-
-  // const reset = () => {
-  //   setStatusIndex(0);
-  //   setUpdate(null);
-  // };
 
   const reset = () => {
     setStatusIndex(0);
     setUpdate(null);
-    setError(null);
   };
 
   return (
@@ -89,12 +64,6 @@ export const OrderTracker = () => {
             Reset
           </Button>
         </div>
-
-        {error && (
-          <p role="alert" className="text-sm text-red-600">
-            {error}
-          </p>
-        )}
 
         {update && (
           <p className="text-sm">
