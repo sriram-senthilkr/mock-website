@@ -1,5 +1,3 @@
-import { hasCapturedPayment } from "./payment";
-
 export const CARRIER_SYNC_INTERVAL_SECONDS = 300;
 export const ETA_RECALC_THRESHOLD_MINUTES = 30;
 export const MAX_WEBHOOK_RETRIES = 5;
@@ -15,7 +13,6 @@ export const STATUSES = [
 export type OrderStatus = (typeof STATUSES)[number];
 
 export class UnknownCarrierEventError extends Error {}
-export class PaymentRequiredError extends Error {}
 
 export interface TrackingUpdate {
   orderId: string;
@@ -30,18 +27,6 @@ export function updateStatus(orderId: string, carrierEvent: string): TrackingUpd
   }
 
   const status = carrierEvent as OrderStatus;
-  const requiresPayment =
-    status === "packed" ||
-    status === "shipped" ||
-    status === "out_for_delivery" ||
-    status === "delivered";
-
-  if (requiresPayment && !hasCapturedPayment(orderId)) {
-    throw new PaymentRequiredError(
-      `Order ${orderId} cannot advance to ${status}: payment is not captured`
-    );
-  }
-
   return {
     orderId,
     status,
