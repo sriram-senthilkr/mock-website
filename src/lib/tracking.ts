@@ -1,6 +1,6 @@
 import { hasCapturedPayment } from "./payment";
 
-export const CARRIER_SYNC_INTERVAL_SECONDS = 120;
+export const CARRIER_SYNC_INTERVAL_SECONDS = 600;
 export const ETA_RECALC_THRESHOLD_MINUTES = 30;
 export const MAX_WEBHOOK_RETRIES = 5;
 export const STATUSES = [
